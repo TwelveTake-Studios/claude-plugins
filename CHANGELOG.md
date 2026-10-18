@@ -1,5 +1,9 @@
 # Changelog
 
+## ratchet 0.1.1
+
+- check-sources counts a bare domain with a path, such as `example.com/pricing`, as a source.
+
 ## 0.1.0
 
 First release.

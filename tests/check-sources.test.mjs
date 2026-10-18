@@ -114,6 +114,13 @@ test('a missing or empty root fails loudly instead of passing', () => {
   assert.match(file.out, /root is not a directory/);
 });
 
+test('a bare domain with a path counts as a source, a file name does not', () => {
+  const sourced = docs({ 'a.md': 'The official extension is $179/year (woocommerce.com/products/pre-orders).\n' });
+  assert.equal(run(sourced).code, 0);
+  const unsourced = docs({ 'a.md': 'The plan in naming.md puts it at $49 a year.\n' });
+  assert.equal(run(unsourced).code, 1);
+});
+
 test('inline code is not read as a figure', () => {
   const dir = docs({ 'a.md': 'List the first column with `awk {print $1}` and the second with `cut -f2`.\n' });
   assert.equal(run(dir).code, 0);

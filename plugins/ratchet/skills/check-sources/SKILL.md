@@ -9,7 +9,7 @@ A figure that came out of a command and a figure that was guessed look identical
 
 A line passes when it, or the paragraph it sits in, carries one of:
 
-- a URL,
+- a URL, with or without `https://` (`example.com/pricing` counts),
 - a date in `YYYY-MM-DD` form,
 - a marker word: verified, measured, tested, confirmed, read from, per the, source:, assumption, assumed, unconfirmed, estimate, guess, not established, unknown, approx.
 

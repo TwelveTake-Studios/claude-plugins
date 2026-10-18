@@ -3,7 +3,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, lstatSy
 import { join, relative, sep, resolve } from "node:path";
 
 const MARKERS = /\b(verified|measured|tested|confirmed|read from|per the|source:|assumption|assumed|unconfirmed|estimate|guess|not established|unknown|approx)\b/i;
-const HAS_URL = /https?:\/\//;
+const HAS_URL = /https?:\/\/|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}\/[^\s)]*/i;
 const HAS_DATE = /\b20\d{2}-\d{2}-\d{2}\b/;
 
 const FIGURE = /(?:[$\u20AC\u00A3]\s?\d[\d,.]*)|(?:\b\d+(?:\.\d+)?\s?%)|(?:\b\d{1,3}(?:,\d{3})+\b)|(?:\bv?\d+\.\d+\.\d+\b)/;
