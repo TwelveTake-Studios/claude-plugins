@@ -1,5 +1,10 @@
 # Changelog
 
+## ratchet 0.1.2
+
+- check-sources takes `--skip-dirs` for folders such as raw research notes.
+- check-sources accepts unverified, proposed, proposal and example as honest labels for a figure that is not a measurement.
+
 ## ratchet 0.1.1
 
 - check-sources counts a bare domain with a path, such as `example.com/pricing`, as a source.

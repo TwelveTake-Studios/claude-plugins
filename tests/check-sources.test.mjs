@@ -121,6 +121,24 @@ test('a bare domain with a path counts as a source, a file name does not', () =>
   assert.equal(run(unsourced).code, 1);
 });
 
+test('skipped directories are not scanned, and their baseline entries are kept', () => {
+  const dir = docs({ 'research/raw.md': 'Sales grew 40%.\n', 'notes/deep/raw.md': 'It costs $9.\n', 'plan.md': 'Plain text.\n' });
+  assert.equal(run(dir).code, 1);
+  const skipped = run(dir, '--skip-dirs', 'research,deep');
+  assert.equal(skipped.code, 0, skipped.out);
+  assert.match(skipped.out, /\(1 files scanned\)/);
+  assert.equal(run(dir, '--write-baseline').code, 0);
+  assert.equal(run(dir, '--skip-dirs', 'research,deep').code, 0);
+  const baseline = JSON.parse(fs.readFileSync(path.join(dir, '.source-baseline.json'), 'utf8'));
+  assert.deepEqual(baseline, { 'research/raw.md': 1, 'notes/deep/raw.md': 1 });
+  assert.equal(run(dir, '--skip-dirs').code, 2);
+});
+
+test('proposed and example figures are marked honestly, not sourced', () => {
+  const dir = docs({ 'a.md': 'Pro at $79 a year (proposed).\n\nFor example, $10 off a $50 order.\n' });
+  assert.equal(run(dir).code, 0);
+});
+
 test('inline code is not read as a figure', () => {
   const dir = docs({ 'a.md': 'List the first column with `awk {print $1}` and the second with `cut -f2`.\n' });
   assert.equal(run(dir).code, 0);

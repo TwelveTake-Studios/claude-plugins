@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, lstatSync } from "node:fs";
 import { join, relative, sep, resolve } from "node:path";
 
-const MARKERS = /\b(verified|measured|tested|confirmed|read from|per the|source:|assumption|assumed|unconfirmed|estimate|guess|not established|unknown|approx)\b/i;
+const MARKERS = /\b(verified|measured|tested|confirmed|read from|per the|source:|assumption|assumed|unconfirmed|unverified|estimate|guess|not established|unknown|approx|proposed|proposal|example)\b/i;
 const HAS_URL = /https?:\/\/|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}\/[^\s)]*/i;
 const HAS_DATE = /\b20\d{2}-\d{2}-\d{2}\b/;
 
@@ -29,6 +29,9 @@ if (!rootStat.isDirectory()) fail(`root is not a directory: ${root}`);
 const writeBaseline = args.includes("--write-baseline");
 const report = args.includes("--report");
 const baselineFile = join(root, ".source-baseline.json");
+const skipIdx = args.indexOf("--skip-dirs");
+if (skipIdx >= 0 && (!args[skipIdx + 1] || args[skipIdx + 1].startsWith("--"))) fail("--skip-dirs needs a comma-separated list of directory names");
+const skipDirs = new Set(skipIdx >= 0 ? args[skipIdx + 1].split(",").map((s) => s.trim()).filter(Boolean) : []);
 
 function walk(dir, out = []) {
   let entries = [];
@@ -47,7 +50,9 @@ function walk(dir, out = []) {
       continue;
     }
     if (st.isSymbolicLink()) continue;
-    if (st.isDirectory()) walk(full, out);
+    if (st.isDirectory()) {
+      if (!skipDirs.has(entry)) walk(full, out);
+    }
     else if (entry.toLowerCase().endsWith(".md")) out.push(full);
   }
   return out;

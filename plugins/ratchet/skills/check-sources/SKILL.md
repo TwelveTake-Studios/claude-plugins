@@ -11,7 +11,7 @@ A line passes when it, or the paragraph it sits in, carries one of:
 
 - a URL, with or without `https://` (`example.com/pricing` counts),
 - a date in `YYYY-MM-DD` form,
-- a marker word: verified, measured, tested, confirmed, read from, per the, source:, assumption, assumed, unconfirmed, estimate, guess, not established, unknown, approx.
+- a marker word: verified, measured, tested, confirmed, read from, per the, source:, assumption, assumed, unconfirmed, unverified, estimate, guess, not established, unknown, approx, proposed, proposal, example.
 
 Figures it looks for: amounts of money in dollars, euros or pounds; percentages; numbers written with a thousands separator; and three-part version numbers. Bare integers are ignored, because model numbers and years are not claims. Inline code, tables, headings, blockquotes, checklist items (`- [ ]`, `- [x]`) and fenced code are skipped.
 
@@ -28,6 +28,7 @@ node "${CLAUDE_SKILL_DIR}/scripts/check-sources.mjs" --root docs
 | `--root <dir>` | Directory to scan, recursively, for `.md` files. Defaults to the current directory. Hidden directories, `node_modules` and symbolic links are skipped. |
 | `--write-baseline` | Record the current counts in `<root>/.source-baseline.json` and exit. |
 | `--report` | After the check, list the 20 files with the most unsourced figures. |
+| `--skip-dirs a,b` | Skip directories with these names anywhere under the root, such as raw research notes whose figures are the findings themselves. Their baseline entries are kept. |
 
 | Exit code | Meaning |
 |---|---|
@@ -37,7 +38,7 @@ node "${CLAUDE_SKILL_DIR}/scripts/check-sources.mjs" --root docs
 
 ## Fixing a failure
 
-Add where the figure came from: the URL, the command and date, or the document it was read from. If it was not checked, say so with "estimate" or "assumption". Adding a marker word to a figure nobody checked defeats the check; mark it honestly or verify it.
+Add where the figure came from: the URL, the command and date, or the document it was read from. If it was not checked, say so with "unverified", "estimate" or "assumption". A figure that is a proposal or an illustration, such as a draft price or a worked example, says so with "proposed" or "example". Adding a marker word to a figure nobody checked defeats the check; mark it honestly or verify it.
 
 ## In CI
 
