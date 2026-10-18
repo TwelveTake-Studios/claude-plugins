@@ -1,0 +1,19 @@
+{
+  "name": "ratchet",
+  "version": "0.1.0",
+  "description": "Ratcheting checks that fail when a file gains descriptive code comments or a document gains figures with no stated source.",
+  "author": {
+    "name": "TwelveTake Studios LLC",
+    "url": "https://twelvetake.com"
+  },
+  "homepage": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "repository": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "license": "Apache-2.0",
+  "keywords": [
+    "comments",
+    "lint",
+    "ci",
+    "documentation",
+    "ratchet"
+  ]
+}

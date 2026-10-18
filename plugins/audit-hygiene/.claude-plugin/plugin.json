@@ -1,0 +1,19 @@
+{
+  "name": "audit-hygiene",
+  "version": "0.1.0",
+  "description": "A register of findings already ruled on, checked before any audit reports, and a procedure for proving a check can fail.",
+  "author": {
+    "name": "TwelveTake Studios LLC",
+    "url": "https://twelvetake.com"
+  },
+  "homepage": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "repository": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "license": "Apache-2.0",
+  "keywords": [
+    "audit",
+    "review",
+    "testing",
+    "ci",
+    "known-issues"
+  ]
+}

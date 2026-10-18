@@ -1,0 +1,19 @@
+{
+  "name": "content-audit",
+  "version": "0.1.0",
+  "description": "Audit AI-written prose for wrong claims, citations that do not support their sentence, sentences copied from the source, and generated voice.",
+  "author": {
+    "name": "TwelveTake Studios LLC",
+    "url": "https://twelvetake.com"
+  },
+  "homepage": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "repository": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "license": "Apache-2.0",
+  "keywords": [
+    "content",
+    "audit",
+    "fact-check",
+    "citations",
+    "writing"
+  ]
+}

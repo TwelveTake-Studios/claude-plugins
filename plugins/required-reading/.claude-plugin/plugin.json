@@ -1,0 +1,18 @@
+{
+  "name": "required-reading",
+  "version": "0.1.0",
+  "description": "Block commands and edits in a risky area until the named runbooks and checklists have been read in full this session.",
+  "author": {
+    "name": "TwelveTake Studios LLC",
+    "url": "https://twelvetake.com"
+  },
+  "homepage": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "repository": "https://github.com/TwelveTake-Studios/claude-plugins",
+  "license": "Apache-2.0",
+  "keywords": [
+    "hooks",
+    "safety",
+    "runbooks",
+    "guardrails"
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "twelvetake",
+  "owner": {
+    "name": "TwelveTake Studios LLC",
+    "url": "https://twelvetake.com"
+  },
+  "description": "Claude Code plugins by TwelveTake Studios.",
+  "plugins": [
+    {
+      "name": "content-audit",
+      "source": "./plugins/content-audit",
+      "description": "Audit AI-written prose for wrong claims, citations that do not support their sentence, sentences copied from the source, and generated voice.",
+      "version": "0.1.0",
+      "license": "Apache-2.0",
+      "keywords": [
+        "content",
+        "audit",
+        "fact-check",
+        "citations",
+        "writing"
+      ]
+    },
+    {
+      "name": "ratchet",
+      "source": "./plugins/ratchet",
+      "description": "Ratcheting checks that fail when a file gains descriptive code comments or a document gains figures with no stated source.",
+      "version": "0.1.0",
+      "license": "Apache-2.0",
+      "keywords": [
+        "comments",
+        "lint",
+        "ci",
+        "documentation",
+        "ratchet"
+      ]
+    },
+    {
+      "name": "required-reading",
+      "source": "./plugins/required-reading",
+      "description": "Block commands and edits in a risky area until the named runbooks and checklists have been read in full this session.",
+      "version": "0.1.0",
+      "license": "Apache-2.0",
+      "keywords": [
+        "hooks",
+        "safety",
+        "runbooks",
+        "guardrails"
+      ]
+    },
+    {
+      "name": "audit-hygiene",
+      "source": "./plugins/audit-hygiene",
+      "description": "A register of findings already ruled on, checked before any audit reports, and a procedure for proving a check can fail.",
+      "version": "0.1.0",
+      "license": "Apache-2.0",
+      "keywords": [
+        "audit",
+        "review",
+        "testing",
+        "ci",
+        "known-issues"
+      ]
+    },
+    {
+      "name": "found-bugs",
+      "source": "./plugins/found-bugs",
+      "description": "Claude fixes or specifically reports every bug it comes across, and a Stop hook sends it back when it leaves one as pre-existing or unrelated.",
+      "version": "0.1.0",
+      "license": "Apache-2.0",
+      "keywords": [
+        "bugs",
+        "testing",
+        "hooks",
+        "code-quality",
+        "review"
+      ]
+    }
+  ]
+}

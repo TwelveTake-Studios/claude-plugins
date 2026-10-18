@@ -1,0 +1,13 @@
+{
+  "name": "twelvetake-claude-plugins",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "Apache-2.0",
+  "scripts": {
+    "test": "node --test tests/check-comments.test.mjs tests/check-sources.test.mjs tests/found-bugs.test.mjs tests/required-reading.test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

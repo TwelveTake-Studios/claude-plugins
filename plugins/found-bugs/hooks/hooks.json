@@ -1,0 +1,27 @@
+{
+  "description": "Sends Claude back once when its final message leaves a bug because it is pre-existing or unrelated to the current change.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/stop.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/stop.mjs\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}
