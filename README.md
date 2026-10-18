@@ -28,7 +28,7 @@ Then install the plugins you want:
 | [ratchet](plugins/ratchet) | Two dependency-free checks that fail when a file gets worse. `check-comments` allows only short section labels in code. `check-sources` fails Markdown that states a price, percentage, count or version with no source. Both keep a baseline, so existing debt does not block work and new debt fails at once. |
 | [required-reading](plugins/required-reading) | A hook that blocks commands and edits matching your patterns until the runbooks, checklists or incident reports you name have been read in full in the current session. |
 | [audit-hygiene](plugins/audit-hygiene) | A register of findings already ruled on, checked before any audit reports, so settled items stop coming back. Plus a procedure for proving a check can fail before trusting a clean result. |
-| [found-bugs](plugins/found-bugs) | Claude fixes or specifically reports every bug it comes across. A Stop hook sends it back when its final message leaves one because it is pre-existing or unrelated to the change. |
+| [found-bugs](plugins/found-bugs) | Claude fixes or specifically reports every bug it comes across, and never removes a feature to make a bug go away. A Stop hook sends it back when its final message does either. |
 
 `ratchet`, `required-reading` and `found-bugs` need Node 18 or later on the PATH.
 

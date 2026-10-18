@@ -1,5 +1,9 @@
 # Changelog
 
+## found-bugs 0.1.1
+
+- A bug is fixed by fixing it, never by removing or disabling the feature. The skill states the rule and the Stop hook sends Claude back when its final message says a feature was removed, disabled, commented out or skipped to make a problem go away.
+
 ## ratchet 0.1.3
 
 - check-comments scans C-style languages (C#, Java, Kotlin, Swift, Go, C, C++, Unity shaders), PHP, hash-comment languages (shell, Ruby, YAML, TOML, PowerShell, GDScript) and XML when added with `--ext`.

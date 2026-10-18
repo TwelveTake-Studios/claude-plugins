@@ -101,6 +101,41 @@ test('the message lets an already-fixed problem be closed in one line', () => {
   assert.match(out.reason, /If that problem is already fixed, say so in one line and finish\./);
 });
 
+const REMOVALS = [
+  'I removed the autosave feature to fix the crash on save.',
+  'Disabled the cache so the stale-price bug no longer appears.',
+  'Commented out the failing validation to get the build green.',
+  'The retry logic was removed, which fixes the duplicate orders.',
+  'I skipped the flaky test so the suite passes.',
+  'Turned off the preview mode as a workaround for the memory leak.',
+  'I removed the percent function and its test so the suite passes.',
+];
+
+for (const message of REMOVALS) {
+  test(`sends Claude back for removing a feature: ${message}`, () => {
+    const out = say(message);
+    assert.equal(out && out.decision, 'block');
+    assert.match(out.reason, /Restore what was removed or disabled and fix the cause/);
+  });
+}
+
+const NOT_REMOVALS = [
+  'Removed the debug logging.',
+  'Removed the duplicate import that caused the crash.',
+  'I did not remove the export feature; I fixed the encoding bug instead.',
+  'Fixed the crash in autosave and the feature still works.',
+  'Removed the unused helper file.',
+  "I didn't disable the cache; the stale price came from a missing invalidation, now fixed.",
+  'I did not disable the cache to fix the stale prices; the invalidation was missing, and it is fixed now.',
+];
+
+for (const message of NOT_REMOVALS) {
+  test(`does not treat this as removing a feature: ${message}`, () => {
+    const out = say(message);
+    assert.ok(!out || !/Restore what was removed/.test(out.reason), message);
+  });
+}
+
 test('fires at most once per turn', () => {
   assert.equal(say(DISMISSALS[0], { stop_hook_active: true }), null);
 });

@@ -64,8 +64,8 @@
     {
       "name": "found-bugs",
       "source": "./plugins/found-bugs",
-      "description": "Claude fixes or specifically reports every bug it comes across, and a Stop hook sends it back when it leaves one as pre-existing or unrelated.",
-      "version": "0.1.0",
+      "description": "Claude fixes or specifically reports every bug it comes across, never removes a feature to make a bug go away, and a Stop hook sends it back when it does either.",
+      "version": "0.1.1",
       "license": "Apache-2.0",
       "keywords": [
         "bugs",

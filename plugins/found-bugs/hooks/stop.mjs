@@ -42,6 +42,15 @@ const NEGATED = new RegExp(`^(?:no\\b(?!\\s*[,${DASHES}-])|none\\b|there\\s+(?:w
 const CURLY_APOSTROPHE = new RegExp(String.fromCharCode(0x2019), 'g');
 const CLAUSE = /;\s+|,?\s+(?:but|while|although|though|however|whereas)\s+|,\s+and\s+|\s+and\s+(?=(?:left|kept|skipped|ignored)\b)/i;
 
+const FEATURE = '(?:features?|options?|settings?|buttons?|toggles?|support|integrations?|pages?|sections?|menus?|tabs?|fields?|endpoints?|animations?|validations?|checks?|tests?|cach(?:e|es|ing)|autosave|previews?|wizards?|shortcuts?|modes?|functionality|capabilit(?:y|ies)|controls?|filters?|hooks?|retr(?:y|ies)|logic|functions?|methods?|commands?|routes?)';
+const REMOVE_VERB = '(?:removed|removing|remove|disabled|disabling|disable|deleted|deleting|dropped|stripped|commented out|turned off|switched off|hid|took out|ripped out|skipped|skipping|skip)';
+const PURPOSE = '(?:to (?:fix|avoid|resolve|stop|prevent|get rid of|work around|silence|unblock)|to (?:make|get) (?:the )?(?:build|tests?|suite|ci|checks?|pipeline)|so (?:that )?(?:the )?(?:[\\w-]+\\s+){0,2}?(?:bug|error|crash|warning|issue|failure|exception|tests?|build|suite|check)|which (?:fixes|fixed|resolves|resolved|stops|stopped|avoids|avoided)|(?:as|for) a workaround)';
+const REMOVALS = [
+  new RegExp(`\\b${REMOVE_VERB}\\b[^.!?\\n]{0,60}?\\b${FEATURE}\\b[^.!?\\n]{0,80}?\\b${PURPOSE}`, 'i'),
+  new RegExp(`\\b${FEATURE}\\b[^.!?\\n]{0,40}?\\b(?:is|are|was|were|has been|have been)\\s+(?:now\\s+)?(?:removed|disabled|turned off|commented out|hidden|skipped)\\b[^.!?\\n]{0,80}?\\b${PURPOSE}`, 'i'),
+];
+const NOT_REMOVED = /\b(?:not|never|without|instead of|rather than)\s+(?:\w+\s+){0,2}(?:remov|disabl|delet|drop|strip|comment|turn|hid|skip)|n't\s+(?:\w+\s+){0,2}(?:remov|disabl|delet|drop|strip|comment|turn|hid|skip)/i;
+
 function lastAssistantText(transcriptPath) {
   let rows;
   try {
@@ -97,6 +106,34 @@ function findDismissal(list) {
   return null;
 }
 
+function findRemoval(list) {
+  for (const sentence of list) {
+    const text = plain(sentence);
+    if (NOT_REMOVED.test(text)) continue;
+    if (REMOVALS.some((rx) => rx.test(text))) return sentence;
+  }
+  return null;
+}
+
+function quote(sentence) {
+  return sentence.length > 200 ? `${sentence.slice(0, 200)}...` : sentence;
+}
+
+const REMOVAL_REASON = [
+  'Fixing a bug means the feature keeps working.',
+  'Restore what was removed or disabled and fix the cause.',
+  'If removing it really is the only option, ask the user before doing it and say what they would lose.',
+  'If the user asked for the removal, say so in one line and finish.',
+].join(' ');
+
+const DISMISSAL_REASON = [
+  'If that problem is already fixed, say so in one line and finish.',
+  'Otherwise: being pre-existing or unrelated to the current change is not a reason to leave a bug.',
+  'If it is in this codebase and the fix is clear, fix it now in its own commit and say what you changed.',
+  "If it needs the user's decision, is risky, or lives in another system, report it specifically: what it is, where, the evidence, and what a fix would need.",
+  'If a known-issues register already rules on it, name the entry. Then finish.',
+].join(' ');
+
 function main() {
   let data;
   try {
@@ -110,23 +147,22 @@ function main() {
   if (!message) message = lastAssistantText(data.agent_transcript_path || data.transcript_path || '');
   if (!message) return;
 
-  const dismissal = findDismissal(sentences(message));
-  if (!dismissal) return;
-
-  const quoted = dismissal.length > 200 ? `${dismissal.slice(0, 200)}...` : dismissal;
-  process.stdout.write(
-    JSON.stringify({
+  const list = sentences(message);
+  const removal = findRemoval(list);
+  if (removal) {
+    process.stdout.write(JSON.stringify({
       decision: 'block',
-      reason: [
-        `Your last message describes a problem by when it arrived: "${quoted}"`,
-        'If that problem is already fixed, say so in one line and finish.',
-        'Otherwise: being pre-existing or unrelated to the current change is not a reason to leave a bug.',
-        'If it is in this codebase and the fix is clear, fix it now in its own commit and say what you changed.',
-        "If it needs the user's decision, is risky, or lives in another system, report it specifically: what it is, where, the evidence, and what a fix would need.",
-        'If a known-issues register already rules on it, name the entry. Then finish.',
-      ].join(' '),
-    }),
-  );
+      reason: `Your last message says a feature was removed or disabled to make a problem go away: "${quote(removal)}" ${REMOVAL_REASON}`,
+    }));
+    return;
+  }
+
+  const dismissal = findDismissal(list);
+  if (!dismissal) return;
+  process.stdout.write(JSON.stringify({
+    decision: 'block',
+    reason: `Your last message describes a problem by when it arrived: "${quote(dismissal)}" ${DISMISSAL_REASON}`,
+  }));
 }
 
 main();

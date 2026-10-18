@@ -17,10 +17,11 @@ description: Deal with every bug you come across, however old it is. Fix it, or 
 ## Do not
 
 - Wave a failing test through because it failed before your change. If the history matters, run it on the unchanged code to find out, and then deal with it either way.
+- Remove, disable, hide or comment out a feature to make a bug go away. Fixing a bug means the feature keeps working. If removing it really is the only option, ask the user first and say what they would lose.
 - Skip, disable or delete a failing test, or loosen an assertion, to get a green run.
 - Fold it into a summary line such as "a few unrelated warnings remain". Each one gets its own line and its own detail.
 - Treat "out of scope" as a reason not to mention it. Scope decides whether a large fix needs the user's go-ahead first, not whether the user hears about the bug.
 
 ## The Stop hook
 
-This plugin also installs a Stop and SubagentStop hook. When Claude's final message describes a problem as pre-existing, already failing, failing on main, or unrelated to the change, and neither that sentence nor the next says it was fixed, the hook sends Claude back: if the problem is in fact already fixed, Claude says so in one line and finishes; otherwise it fixes it or reports it specifically. "Should be fixed later" does not count as fixed. Statements that nothing was found ("No pre-existing failures") and test-first reports ("fails before the change and passes after") are left alone. It fires at most once per turn, and it ignores text inside code.
+This plugin also installs a Stop and SubagentStop hook. It catches two things. When Claude's final message says it removed, disabled, commented out or skipped a feature, a check or a test to make a problem go away, the hook sends it back to restore the feature and fix the cause, or to ask the user; if the user asked for the removal, Claude says so in one line and finishes. And when the final message describes a problem as pre-existing, already failing, failing on main, or unrelated to the change, and neither that sentence nor the next says it was fixed, the hook sends Claude back: if the problem is in fact already fixed, Claude says so in one line and finishes; otherwise it fixes it or reports it specifically. "Should be fixed later" does not count as fixed. Statements that nothing was found ("No pre-existing failures") and test-first reports ("fails before the change and passes after") are left alone. It fires at most once per turn, and it ignores text inside code.

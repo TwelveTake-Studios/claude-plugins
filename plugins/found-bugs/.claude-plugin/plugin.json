@@ -1,7 +1,7 @@
 {
   "name": "found-bugs",
-  "version": "0.1.0",
-  "description": "Claude fixes or specifically reports every bug it comes across, and a Stop hook sends it back when it leaves one as pre-existing or unrelated.",
+  "version": "0.1.1",
+  "description": "Claude fixes or specifically reports every bug it comes across, never removes a feature to make a bug go away, and a Stop hook sends it back when it does either.",
   "author": {
     "name": "TwelveTake Studios LLC",
     "url": "https://twelvetake.com"
