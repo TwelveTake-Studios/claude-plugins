@@ -88,7 +88,7 @@ function unsourced(file) {
     if (inFence || SKIP_LINE.test(line)) continue;
     if (!FIGURE.test(line.replace(/`[^`]*`/g, " "))) continue;
     const block = blocks.find(b => i >= b.start && i < b.end);
-    const scope = block ? block.text : line;
+    const scope = (block ? block.text : line).replace(/\s+/g, " ");
     if (MARKERS.test(scope) || HAS_URL.test(scope) || HAS_DATE.test(scope)) continue;
     hits.push({ line: i + 1, text: line.trim().slice(0, 100) });
   }

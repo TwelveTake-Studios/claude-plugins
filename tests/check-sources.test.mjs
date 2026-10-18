@@ -142,6 +142,14 @@ test('marker words count in their other forms, and "Source:" works before a spac
   assert.equal(r.code, 0, r.out);
 });
 
+test('a marker wrapped across a line break still counts', () => {
+  const dir = docs({
+    'a.md': 'Competitors charge $69 a year, per\nthe round-2 report.\n\nThe figure was read\nfrom the vendor page: $40 a month.\n\nThe cap is not\n  established, at 5%.\n',
+  });
+  const r = run(dir);
+  assert.equal(r.code, 0, r.out);
+});
+
 test('proposed and example figures are marked honestly, not sourced', () => {
   const dir = docs({ 'a.md': 'Pro at $79 a year (proposed).\n\nFor example, $10 off a $50 order.\n' });
   assert.equal(run(dir).code, 0);

@@ -1,6 +1,6 @@
 {
   "name": "ratchet",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Ratcheting checks that fail when a file gains descriptive code comments or a document gains figures with no stated source.",
   "author": {
     "name": "TwelveTake Studios LLC",

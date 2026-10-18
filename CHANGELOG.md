@@ -1,5 +1,9 @@
 # Changelog
 
+## ratchet 0.1.4
+
+- check-sources recognizes a marker that a line break splits, such as "per" at the end of one line and "the" at the start of the next.
+
 ## found-bugs 0.1.1
 
 - A bug is fixed by fixing it, never by removing or disabling the feature. The skill states the rule and the Stop hook sends Claude back when its final message says a feature was removed, disabled, commented out or skipped to make a problem go away.
