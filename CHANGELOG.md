@@ -1,5 +1,10 @@
 # Changelog
 
+## ratchet 0.1.3
+
+- check-comments scans C-style languages (C#, Java, Kotlin, Swift, Go, C, C++, Unity shaders), PHP, hash-comment languages (shell, Ruby, YAML, TOML, PowerShell, GDScript) and XML when added with `--ext`.
+- check-sources accepts marker words in their other forms (measures, verifies, estimated) and `Source:` followed by a space.
+
 ## ratchet 0.1.2
 
 - check-sources takes `--skip-dirs` for folders such as raw research notes.

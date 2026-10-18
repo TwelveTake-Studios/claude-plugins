@@ -2,7 +2,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, lstatSync } from "node:fs";
 import { join, relative, sep, resolve } from "node:path";
 
-const MARKERS = /\b(verified|measured|tested|confirmed|read from|per the|source:|assumption|assumed|unconfirmed|unverified|estimate|guess|not established|unknown|approx|proposed|proposal|example)\b/i;
+const MARKERS = /\b(?:verif(?:ied|ies|y)|measur(?:ed|es|ing|ements?)|tested|confirm(?:ed|s)|read from|per the|assumption|assumed|unconfirmed|unverified|estimat(?:e|ed|es)|guess|not established|unknown|approx|proposed|proposal|example)\b|\bsource:/i;
 const HAS_URL = /https?:\/\/|\b[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}\/[^\s)]*/i;
 const HAS_DATE = /\b20\d{2}-\d{2}-\d{2}\b/;
 

@@ -33,7 +33,10 @@ if (!rootStat.isDirectory()) fail(`root is not a directory: ${ROOT}`);
 const BASELINE = path.join(ROOT, '.comment-baseline.json');
 
 const DEFAULT_EXT = ['.ts', '.tsx', '.mjs', '.cjs', '.js', '.jsx', '.svelte', '.vue', '.astro', '.css', '.html', '.sql', '.prisma'];
-const SUPPORTED_EXT = new Set([...DEFAULT_EXT, '.py', '.rs', '.md', '.mdx', '.scss', '.less']);
+const C_STYLE_EXT = ['.cs', '.java', '.kt', '.kts', '.swift', '.go', '.c', '.h', '.cc', '.cpp', '.hpp', '.m', '.mm', '.dart', '.scala', '.groovy', '.gradle', '.shader', '.hlsl', '.cginc', '.compute', '.glsl'];
+const HASH_EXT = ['.sh', '.bash', '.zsh', '.rb', '.yml', '.yaml', '.toml', '.ps1', '.psm1', '.gd', '.r'];
+const XML_EXT = ['.xml', '.uxml', '.xaml'];
+const SUPPORTED_EXT = new Set([...DEFAULT_EXT, '.py', '.rs', '.md', '.mdx', '.scss', '.less', '.uss', '.php', '.phtml', ...C_STYLE_EXT, ...HASH_EXT, ...XML_EXT]);
 const EXTRA_EXT = listFlag('--ext').map((e) => (e.startsWith('.') ? e : `.${e}`).toLowerCase());
 for (const e of EXTRA_EXT) {
   if (!SUPPORTED_EXT.has(e)) fail(`unsupported extension ${e}; supported: ${[...SUPPORTED_EXT].join(' ')}`);
@@ -63,7 +66,7 @@ function isSeparator(text) {
   return t.split(/\s+/).length <= NAME_MAX_WORDS && t.length <= NAME_MAX_CHARS;
 }
 
-function extractComments(src) {
+function extractComments(src, opts = {}) {
   const out = [];
   let i = 0, line = 1, inS = null, tpl = 0, inRe = false;
   const n = src.length;
@@ -76,6 +79,12 @@ function extractComments(src) {
     if (tpl) { if (c === BS) { i += 2; continue; } if (c === '`') tpl--; i++; continue; }
     if (c === '"' || c === "'") { inS = c; i++; continue; }
     if (c === '`') { tpl++; i++; continue; }
+    if (opts.hashAtLineStart && c === '#' && c2 !== '[' && /^[ \t]*$/.test(src.slice(src.lastIndexOf('\n', i - 1) + 1, i))) {
+      const j = src.indexOf('\n', i);
+      const end = j === -1 ? n : j;
+      out.push({ line, text: src.slice(i + 1, end) });
+      i = end; continue;
+    }
     if (c === '/' && c2 === '/' && src[i - 1] === ':' && /\S/.test(src[i + 2] || '')) { i += 2; continue; }
     if (c === '/' && c2 === '/') {
       const j = src.indexOf('\n', i);
@@ -263,6 +272,47 @@ function extractHtmlComments(src) {
   return out;
 }
 
+function extractPhpComments(src) {
+  const out = extractComments(src, { hashAtLineStart: true });
+  for (const m of src.matchAll(/<!--([\s\S]*?)-->/g)) {
+    if (/^\s*\[if\b|<!\[endif\]/i.test(m[1])) continue;
+    out.push({ line: lineAt(src, m.index), text: m[1] });
+  }
+  return out;
+}
+
+function extractHashComments(src) {
+  const out = [];
+  const lines = src.split('\n');
+  let block = null;
+  lines.forEach((text, idx) => {
+    const line = idx + 1;
+    if (block) {
+      const end = text.indexOf('#>');
+      block.text += '\n' + (end === -1 ? text : text.slice(0, end));
+      if (end !== -1) { out.push(block); block = null; }
+      return;
+    }
+    if (idx === 0 && text.startsWith('#!')) return;
+    let inS = null;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inS) { if (c === String.fromCharCode(92)) { i++; continue; } if (c === inS) inS = null; continue; }
+      if (c === '"' || c === "'") { inS = c; continue; }
+      if (c === '<' && text[i + 1] === '#') {
+        const end = text.indexOf('#>', i + 2);
+        if (end === -1) { block = { line, text: text.slice(i + 2) }; return; }
+        out.push({ line, text: text.slice(i + 2, end) });
+        i = end + 1;
+        continue;
+      }
+      if (c === '#' && (i === 0 || /\s/.test(text[i - 1]))) { out.push({ line, text: text.slice(i + 1) }); return; }
+    }
+  });
+  if (block) out.push(block);
+  return out;
+}
+
 function blankFences(src) {
   return src.replace(/^(```|~~~)[\s\S]*?^\1/gm, (m) => m.replace(/[^\n]/g, ' '));
 }
@@ -294,6 +344,11 @@ const EXTRACTORS = {
   '.svelte': extractHtmlComments,
   '.md': extractMarkdownComments,
   '.mdx': extractMdxComments,
+  '.uss': (src) => extractBlockComments(src),
+  '.php': extractPhpComments,
+  '.phtml': extractPhpComments,
+  ...Object.fromEntries(HASH_EXT.map((e) => [e, extractHashComments])),
+  ...Object.fromEntries(XML_EXT.map((e) => [e, extractHtmlComments])),
 };
 
 function withoutDirectives(lines) {

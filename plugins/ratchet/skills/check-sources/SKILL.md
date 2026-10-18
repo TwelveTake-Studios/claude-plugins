@@ -11,7 +11,7 @@ A line passes when it, or the paragraph it sits in, carries one of:
 
 - a URL, with or without `https://` (`example.com/pricing` counts),
 - a date in `YYYY-MM-DD` form,
-- a marker word: verified, measured, tested, confirmed, read from, per the, source:, assumption, assumed, unconfirmed, unverified, estimate, guess, not established, unknown, approx, proposed, proposal, example.
+- a marker word: verified (or verifies), measured (or measures, measurement), tested, confirmed, read from, per the, source:, assumption, assumed, unconfirmed, unverified, estimate (or estimated), guess, not established, unknown, approx, proposed, proposal, example.
 
 Figures it looks for: amounts of money in dollars, euros or pounds; percentages; numbers written with a thousands separator; and three-part version numbers. Bare integers are ignored, because model numbers and years are not claims. Inline code, tables, headings, blockquotes, checklist items (`- [ ]`, `- [x]`) and fenced code are skipped.
 

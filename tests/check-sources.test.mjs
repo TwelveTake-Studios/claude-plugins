@@ -134,6 +134,14 @@ test('skipped directories are not scanned, and their baseline entries are kept',
   assert.equal(run(dir, '--skip-dirs').code, 2);
 });
 
+test('marker words count in their other forms, and "Source:" works before a space', () => {
+  const dir = docs({
+    'a.md': 'An indexed lookup measures 0.2 ms.\n\nSource: the vendor price page, $40 a month.\n\nThe share is estimated at 12%.\n\nThe log verifies 2,050 rows.\n',
+  });
+  const r = run(dir);
+  assert.equal(r.code, 0, r.out);
+});
+
 test('proposed and example figures are marked honestly, not sourced', () => {
   const dir = docs({ 'a.md': 'Pro at $79 a year (proposed).\n\nFor example, $10 off a $50 order.\n' });
   assert.equal(run(dir).code, 0);

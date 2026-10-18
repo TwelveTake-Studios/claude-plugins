@@ -20,11 +20,11 @@ node "${CLAUDE_SKILL_DIR}/scripts/check-comments.mjs" --root .
 | `--root <dir>` | Directory to scan. Defaults to the current directory. |
 | `--write-baseline` | Record the current counts in `<root>/.comment-baseline.json` and exit. |
 | `--report` | After the check, list the 25 files with the most violations. |
-| `--ext .py,.md` | Also scan these types. Supported: `.py .rs .md .mdx .scss .less`. |
+| `--ext .cs,.php` | Also scan these types. C-style: `.cs .java .kt .kts .swift .go .c .h .cc .cpp .hpp .m .mm .dart .scala .groovy .gradle .shader .hlsl .cginc .compute .glsl`. Hash comments: `.py .sh .bash .zsh .rb .yml .yaml .toml .ps1 .psm1 .gd .r`. Also `.rs .php .phtml .md .mdx .scss .less .uss .xml .uxml .xaml`. |
 | `--skip-dirs bin,obj` | Skip more directory names. |
 | `--ci` | CI mode, also turned on by a `CI` environment variable. |
 
-Scanned by default: `.ts .tsx .mjs .cjs .js .jsx .svelte .vue .astro .css .html .sql .prisma`. In `.vue`, `.svelte`, `.astro` and `.html` files, HTML comments are checked along with the script and style blocks, including `//` comments in SCSS, Less and Stylus style blocks. In Markdown, HTML comments outside code fences are checked. Skipped directories include `node_modules`, `dist`, `build`, `.git`, `.next`, `.svelte-kit`, `coverage`, `venv`, `.venv`, `__pycache__`, `target`, `vendor`, `test-output`, `test-results` and `playwright-report`.
+Scanned by default: `.ts .tsx .mjs .cjs .js .jsx .svelte .vue .astro .css .html .sql .prisma`. In `.vue`, `.svelte`, `.astro` and `.html` files, HTML comments are checked along with the script and style blocks, including `//` comments in SCSS, Less and Stylus style blocks. In Markdown, HTML comments outside code fences are checked. In PHP, `//`, `/* */` and line-start `#` comments are checked along with HTML comments in templates, and `#[` attributes are not comments. In hash-comment languages a `#` starts a comment only at the start of a line or after whitespace, so a URL fragment or `${#var}` is not one. Skipped directories include `node_modules`, `dist`, `build`, `.git`, `.next`, `.svelte-kit`, `coverage`, `venv`, `.venv`, `__pycache__`, `target`, `vendor`, `test-output`, `test-results` and `playwright-report`.
 
 | Exit code | Meaning |
 |---|---|

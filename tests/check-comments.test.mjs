@@ -117,11 +117,48 @@ test('a missing or empty root fails loudly instead of passing', () => {
   assert.match(file.out, /root is not a directory/);
 });
 
+test('C# and other C-style languages are checked when requested', () => {
+  const ok = repo({ 'Player.cs': '#region Movement\n// Movement\npublic class Player { string s = "a // b"; }\n#endregion\n' });
+  assert.equal(run(ok, '--ext', '.cs').code, 0);
+  const bad = repo({ 'Player.cs': '// clamp speed because the old controller overshoots on slopes\npublic class Player {}\n' });
+  const r = run(bad, '--ext', '.cs,.shader,.java');
+  assert.equal(r.code, 1);
+  assert.match(r.out, /Player\.cs: 1/);
+  const shader = repo({ 'Water.shader': 'Shader "Water" {\n  /* tweak the foam later once art signs off */\n}\n' });
+  assert.equal(run(shader, '--ext', '.shader').code, 1);
+});
+
+test('PHP comments are checked, attributes and template colors are not comments', () => {
+  const ok = repo({
+    'a.php': "<?php\n#[Route('/admin/settings', methods: ['GET', 'POST'])]\nclass A {}\n// Header\n?>\n<style>a { color: #fff; }</style>\n<a href=\"#top\">top</a>\n",
+  });
+  const r0 = run(ok, '--ext', '.php');
+  assert.equal(r0.code, 0, r0.out);
+  for (const body of ['<?php\n// load this late because the theme filters run first\n', '<?php\n# temporary until the client confirms the prices\n', '<?php ?>\n<!-- staging server is 10.0.0.5 -->\n<p>x</p>\n']) {
+    const dir = repo({ 'a.php': body });
+    assert.equal(run(dir, '--ext', '.php').code, 1, body);
+  }
+});
+
+test('hash-comment languages are checked, and a hash inside a value is not a comment', () => {
+  const ok = repo({
+    'deploy.sh': '#!/usr/bin/env bash\n# Setup\necho "${#ARGS[@]}"\nurl="http://example.com/page#top"\n',
+    'a.yml': 'name: site\nhomepage: http://example.com/#about\n# Build\n',
+  });
+  const r0 = run(ok, '--ext', '.sh,.yml');
+  assert.equal(r0.code, 0, r0.out);
+  const bad = repo({ 'a.yml': 'retries: 3 # three because the API drops the first call\n', 'b.ps1': '<# this script assumes the share is mounted #>\nWrite-Output hi\n' });
+  const r = run(bad, '--ext', '.yml,.ps1');
+  assert.equal(r.code, 1);
+  assert.match(r.out, /a\.yml: 1/);
+  assert.match(r.out, /b\.ps1: 1/);
+});
+
 test('an unsupported extension is rejected', () => {
-  const dir = repo({ 'a.sh': '# creds live in the vault\n' });
-  const r = run(dir, '--ext', '.sh');
+  const dir = repo({ 'a.cbl': '* creds live in the vault\n' });
+  const r = run(dir, '--ext', '.cbl');
   assert.equal(r.code, 2);
-  assert.match(r.out, /unsupported extension \.sh/);
+  assert.match(r.out, /unsupported extension \.cbl/);
 });
 
 test('status words fail with or without a colon', () => {
